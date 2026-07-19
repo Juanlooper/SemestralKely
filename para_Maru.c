@@ -77,7 +77,7 @@ int main() {
             gan_neta = gan_bruta + premio - descuento; /* Suma las ganancias y resta las deudas */
             
             printf("Buenas: %d | Malas: %.2f%% | Pago: B/.%.2f\nClasificacion: ", p_buenas, porc_m, gan_neta);
-            /* Categorias de empleados basado en su produccion y fallos */
+            /* Categorias de empleados (Si produce menos de 70, la tabla dice que es Deficiente) */
             if(p_total > 120 && porc_m < 3.0) printf("Excelente\n");
             else if(p_total >= 90 && p_total <= 120 && porc_m < 6.0) printf("Bueno\n");
             else if(p_total >= 70 && p_total <= 89) printf("Regular\n");
@@ -91,7 +91,7 @@ int main() {
         
         /* Subsistema de menu */
         do {
-            printf("\n--- MENU ---\n1. Resumen\n2. Eficiencia\n3. Advertencias\n4. Continuar\nSeleccion: ");
+            printf("\n--- MENU ---\n1. Resumen\n2. Eficiencia\n3. Advertencias\n4. Continuar\n5. Terminar programa\nSeleccion: ");
             do { if(scanf("%d", &m_opcion) == 1) break; printf("Opcion falsa: "); while(getchar()!='\n'); } while(1);
             
             switch(m_opcion) {
@@ -108,12 +108,15 @@ int main() {
                 case 3:
                     efi_t = (t_prod > 0) ? ((float)t_buen / t_prod) * 100.0 : 0.0;
                     printf("Avisos:\n"); /* Revisa todas las variables acumuladas del turno usando if's individuales */
-                    if(t_mal > C_MAXD) printf(" * Demasiados defectos\n");
-                    if(t_prod < 500) printf(" * Produccion escasa\n");
-                    if(efi_t < 90.0) printf(" * Eficiencia reprobable\n");
-                    if(t_desc > 250.0) printf(" * Alta penalizacion\n");
+                    int band_aviso = 0;
+                    if(t_mal > C_MAXD) { printf(" * Demasiados defectos\n"); band_aviso = 1; }
+                    if(t_prod < 500) { printf(" * Produccion escasa\n"); band_aviso = 1; }
+                    if(efi_t < 90.0) { printf(" * Eficiencia reprobable\n"); band_aviso = 1; }
+                    if(t_desc > 250.0) { printf(" * Alta penalizacion\n"); band_aviso = 1; }
+                    if(!band_aviso) printf(" * Turno limpio sin avisos.\n");
                     break;
                 case 4: printf("Avanzando...\n"); break;
+                case 5: printf("Finalizando programa...\n"); exit(0);
                 default: printf("Opcion no existe.\n");
             }
         } while(m_opcion != 4);

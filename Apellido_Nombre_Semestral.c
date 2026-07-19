@@ -117,6 +117,7 @@ int main() {
             
             printf("\n  --- Resultados Operario %d ---\n  Piezas buenas: %d\n  Porcentaje de defectos: %.2f%%\n  Valor producido: B/.%.2f\n  Penalizacion: B/.%.2f\n  Produccion neta: B/.%.2f\n  Clasificacion: ", j, buen, pDef, vPro, pena, neta);
             
+            // (Nota: Si produce menos de 70 piezas es Deficiente segun los rangos establecidos)
             if(prod > 120 && pDef < 3.0) printf("Excelente\n");
             else if(prod >= 90 && prod <= 120 && pDef < 6.0) printf("Bueno\n");
             else if(prod >= 70 && prod <= 89) printf("Regular\n");
@@ -129,7 +130,7 @@ int main() {
         
         // PARTE 4
         do {
-            printf("\n==============================\n        MENU DEL TURNO        \n==============================\n1. Resumen del turno\n2. Eficiencia del turno\n3. Advertencias\n4. Continuar\nOpcion: ");
+            printf("\n==============================\n        MENU DEL TURNO        \n==============================\n1. Resumen del turno\n2. Eficiencia del turno\n3. Advertencias\n4. Continuar\n5. Terminar programa\nOpcion: ");
             while(scanf("%d", &opc) != 1) { // Control contra letras en la eleccion del menu
                 printf("Error. Ingrese una opcion numerica valida: ");
                 while(getchar() != '\n');
@@ -152,13 +153,16 @@ int main() {
                     // Alertas usando if simples (revisa todas las condiciones, no solo una)
                     printf("\n--- Advertencias ---\n");
                     efiT = (pTur > 0) ? ((float)bTur / pTur) * 100.0 : 0.0;
-                    if(dTur > MAXD) printf("- Mas de 10 piezas defectuosas en el turno.\n");
-                    if(pTur < 500) printf("- Se han producido menos de 500 piezas.\n");
-                    if(efiT < 90.0) printf("- La eficiencia del turno es menor al 90%%.\n");
-                    if(peTu > 250.0) printf("- Las penalizaciones del turno superan B/.250.\n");
+                    int existen_alertas = 0;
+                    if(dTur > MAXD) { printf("- Mas de 10 piezas defectuosas en el turno.\n"); existen_alertas = 1; }
+                    if(pTur < 500) { printf("- Se han producido menos de 500 piezas.\n"); existen_alertas = 1; }
+                    if(efiT < 90.0) { printf("- La eficiencia del turno es menor al 90%%.\n"); existen_alertas = 1; }
+                    if(peTu > 250.0) { printf("- Las penalizaciones del turno superan B/.250.\n"); existen_alertas = 1; }
+                    if(!existen_alertas) printf("- No se detectaron advertencias en este turno.\n");
                     break;
                 case 4: printf("Continuando...\n"); break;
-                default: printf("Opcion incorrecta. Elija 1, 2, 3 o 4.\n");
+                case 5: printf("Finalizando sistema anticipadamente...\n"); return 0;
+                default: printf("Opcion incorrecta. Elija del 1 al 5.\n");
             }
         } while(opc != 4);
     } 

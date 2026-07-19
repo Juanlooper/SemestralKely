@@ -79,7 +79,7 @@ int main() {
             pago_neto = ganancia + bono - multa; 
             
             printf(">> Buenas: %d | Malas: %.2f%% | Neto: B/.%.2f\nCategoria: ", buenas, porc_malas, pago_neto);
-            // Clasificacion segun produccion
+            // Clasificacion segun produccion (Nota: menos de 70 piezas cae en Deficiente por regla)
             if(producidas > 120 && porc_malas < 3.0) printf("Excelente\n");
             else if(producidas >= 90 && producidas <= 120 && porc_malas < 6.0) printf("Bueno\n");
             else if(producidas >= 70 && producidas <= 89) printf("Regular\n");
@@ -95,7 +95,7 @@ int main() {
         
         // Menu de fin de turno
         do {
-            printf("\n--- MENU DE TURNO ---\n1. Ver Resumen\n2. Ver Eficiencia\n3. Ver Alertas\n4. Continuar\nElije: ");
+            printf("\n--- MENU DE TURNO ---\n1. Ver Resumen\n2. Ver Eficiencia\n3. Ver Alertas\n4. Continuar\n5. Terminar programa\nElije: ");
             while(scanf("%d", &opcion) != 1) { // Anti letras
                 printf("Opcion invalida: "); while(getchar() != '\n');
             }
@@ -114,12 +114,15 @@ int main() {
                 case 3:
                     efi_t = (tot_prod_t > 0) ? ((float)tot_buen_t / tot_prod_t) * 100.0 : 0.0;
                     printf("\nAlertas:\n"); // Revisa varios ifs simples
-                    if(tot_mal_t > MAX_DEFECTOS) printf("- Muchas malas\n");
-                    if(tot_prod_t < 500) printf("- Produccion baja\n");
-                    if(efi_t < 90.0) printf("- Baja eficiencia\n");
-                    if(mul_t > 250.0) printf("- Multas extremas\n");
+                    int hay_alerta = 0;
+                    if(tot_mal_t > MAX_DEFECTOS) { printf("- Muchas malas\n"); hay_alerta = 1; }
+                    if(tot_prod_t < 500) { printf("- Produccion baja\n"); hay_alerta = 1; }
+                    if(efi_t < 90.0) { printf("- Baja eficiencia\n"); hay_alerta = 1; }
+                    if(mul_t > 250.0) { printf("- Multas extremas\n"); hay_alerta = 1; }
+                    if(!hay_alerta) printf("- Todo en orden. No hay alertas.\n");
                     break;
                 case 4: printf("Siguiente...\n"); break;
+                case 5: printf("Terminando programa prematuramente...\n"); return 0;
                 default: printf("Opcion no existe.\n");
             }
         } while(opcion != 4);

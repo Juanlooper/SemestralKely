@@ -76,7 +76,7 @@ int main() {
             valNeta = valProduccion + valBono - valMulta;
             
             printf("-> OK: %d, Malas: %.1f%%, Neto: B/.%.2f\n-> Rendimiento: ", pBuenas, pjeMalas, valNeta);
-            // Categorizacion de operario
+            // Categorizacion de operario (Menos de 70 = Deficiente)
             if(pTotal > 120 && pjeMalas < 3.0f) printf("Excelente\n");
             else if(pTotal >= 90 && pTotal <= 120 && pjeMalas < 6.0f) printf("Bueno\n");
             else if(pTotal >= 70 && pTotal <= 89) printf("Regular\n");
@@ -93,7 +93,7 @@ int main() {
         
         // Despliegue de menu interactivo
         while(1) {
-            printf("\n[1] Resumen [2] Efic [3] Alertas [4] Salir turno\nSeleccione: ");
+            printf("\n[1] Resumen [2] Efic [3] Alertas [4] Salir turno [5] Terminar programa\nSeleccione: ");
             while(1) { // Proteccion del menu
                 if(scanf("%d", &optMenu) == 1) break;
                 printf("Error de menu: "); while(getchar() != '\n');
@@ -111,12 +111,16 @@ int main() {
             } else if(optMenu == 3) {
                 tEficiencia = (tProd > 0) ? ((float)tBuenas / tProd) * 100.0f : 0.0f;
                 printf("Alertas de turno:\n"); // Reporta todas las que se cumplan segun las variables acumuladas
-                if(tMalas > LIMITE_MALAS) printf("- Defectos elevados\n");
-                if(tProd < 500) printf("- Baja cuota de produccion\n");
-                if(tEficiencia < 90.0f) printf("- Eficiencia critica\n");
-                if(tMulta > 250.0f) printf("- Multiples penalizaciones\n");
+                int con_alertas = 0;
+                if(tMalas > LIMITE_MALAS) { printf("- Defectos elevados\n"); con_alertas = 1; }
+                if(tProd < 500) { printf("- Baja cuota de produccion\n"); con_alertas = 1; }
+                if(tEficiencia < 90.0f) { printf("- Eficiencia critica\n"); con_alertas = 1; }
+                if(tMulta > 250.0f) { printf("- Multiples penalizaciones\n"); con_alertas = 1; }
+                if(!con_alertas) printf("- Ninguna. Todo excelente.\n");
             } else if(optMenu == 4) {
                 break; // Rompe el menu y avanza
+            } else if(optMenu == 5) {
+                printf("Cerrando aplicacion...\n"); return 0;
             } else {
                 printf("Opcion errada.\n");
             }

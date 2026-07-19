@@ -69,7 +69,7 @@ int main(void) {
             v_neto = v_prod + v_bono - v_multa; // Pago neto: le damos su plata y su bono, y le quitamos la multa
             
             printf("   -> Validas: %d | Averias: %.2f%% | Neto: B/.%.2f\n   -> Evaluacion: ", f_buenas, porc_mal, v_neto);
-            // Categorizacion simple, se imprime enseguida en lugar de guardarlo en variable
+            // Categorizacion simple, se imprime enseguida en lugar de guardarlo en variable (Si hace menos de 70 = Deficiente por regla general)
             if(f_total > 120 && porc_mal < 3.0f) printf("Excelente\n");
             else if(f_total >= 90 && f_total <= 120 && porc_mal < 6.0f) printf("Bueno\n");
             else if(f_total >= 70 && f_total <= 89) printf("Regular\n");
@@ -86,7 +86,7 @@ int main(void) {
         
         // Despliegue de panel por cada vez que acaba la revision del turno
         do {
-            printf("\n   === OPCIONES DEL TURNO %d ===\n   [1] Cifras\n   [2] Eficiencia\n   [3] Alertas\n   [4] Seguir\n   Opcion: ", i_turno);
+            printf("\n   === OPCIONES DEL TURNO %d ===\n   [1] Cifras\n   [2] Eficiencia\n   [3] Alertas\n   [4] Seguir\n   [5] Terminar programa\n   Opcion: ", i_turno);
             while(scanf("%d", &opc) != 1) { while(getchar() != '\n'); printf("   Error: "); } // Filtrar basuras de letras
             
             switch(opc) {
@@ -103,12 +103,15 @@ int main(void) {
                 case 3:
                     efi_t = (act_prod > 0) ? ((float)act_buen / act_prod) * 100.0f : 0.0f;
                     printf("\n   Alertas:\n"); // Revisamos variables del turno, if separados para mostrar multiple errores a la vez
-                    if(act_mal > LIMITE) printf("   [!] Muchas averias.\n");
-                    if(act_prod < 500) printf("   [!] Deficit productivo.\n");
-                    if(efi_t < 90.0f) printf("   [!] Rendimiento critico.\n");
-                    if(act_mul > 250.0f) printf("   [!] Sobrecosto.\n");
+                    int alarmas_activas = 0;
+                    if(act_mal > LIMITE) { printf("   [!] Muchas averias.\n"); alarmas_activas = 1; }
+                    if(act_prod < 500) { printf("   [!] Deficit productivo.\n"); alarmas_activas = 1; }
+                    if(efi_t < 90.0f) { printf("   [!] Rendimiento critico.\n"); alarmas_activas = 1; }
+                    if(act_mul > 250.0f) { printf("   [!] Sobrecosto.\n"); alarmas_activas = 1; }
+                    if(!alarmas_activas) printf("   [OK] No hay problemas que reportar.\n");
                     break;
                 case 4: printf("   Procediendo...\n"); break;
+                case 5: printf("   Cerrando el sistema abruptamente...\n"); exit(0);
                 default: printf("   No reconocida.\n");
             }
         } while(opc != 4);
